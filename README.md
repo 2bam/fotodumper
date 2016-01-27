@@ -22,7 +22,7 @@ fotolog-username is the name you get from the link (http://www.fotolog.com/fotol
 If for some reason it fails (e.g. sometimes last thumbnail pages are blank...), you must look the FIRST picture you posted and force to download it:
 
 `node fotodump.js <fotolog-username> -f <first-image-number>`
-(If your first image EVER's link is: http://www.fotolog.com/_username_/**12345**, use `node fotodump.js _username_ -f 12345`)
+(If your first image EVER's link is: http://www.fotolog.com/username/12345, use `node fotodump.js _username_ -f 12345`)
 
 Full usage:
 ```
