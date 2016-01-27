@@ -163,14 +163,17 @@ function findFirstPhotoID(url, onSuccess, onError) {
             try {
                 
                 var $ = cheerio.load(body);
-
-                var lastTag;
-                $('a.wall_img_container').each(function (i, elem) {
-                    //log($(this))
-                    lastTag = $(this)
-                })
                 
-			    picUrl = String(lastTag.attr("href"));
+                
+                var lastTag;
+                lastTag = $('a.wall_img_container').last();
+                //console.log(lastTag);
+                //each(function (i, elem) {
+                //    //log($(this))
+                //    lastTag = $(this)
+                //})
+                
+			    picUrl = lastTag.attr("href");
                 picID = picUrl.substring(picUrl.lastIndexOf('/', picUrl.length-2)+1, picUrl.length-1);
                 //console.log("last=", picUrl);
                 //console.log("pic ID=", picID);

@@ -48,7 +48,8 @@ var failed = {
     extracts: [],
     images: [],
     lastId: 0,
-    lastIndex: 0
+    lastIndex: 0,
+    firstId: 0
 };
 var success = [];
 
@@ -106,6 +107,8 @@ function downloadImageOrRetry(id, url, local, retry) {
         }
         , function (err) {
             printError(err);
+            failed.lastIndex = index;
+
             if (retry <= RETRIES) {
                 downloadImageOrRetry(id, url, local, retry + 1);     //Try once more...
             }
@@ -122,7 +125,7 @@ function processId(id, index, retry) {
     if (!index) index = 0;
     
     var idx = 0;
-    while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
+    while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.statSync(PATH_IMG + id + ".jpg").size != 0 && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
         skip = js.readFileSync(PATH_SINGLE_DATA + id + ".json");
         
         if (!skip) break;   //on error in .json, redownload
@@ -144,10 +147,13 @@ function processId(id, index, retry) {
         }
     }
     
-
+    //just in case    
+    if (!failed.lastId || failed.lastIndex < index) {
+        failed.lastId = id;
+        failed.lastIndex = index;
+        process.stdout.write("(" + id + "," + index + ")");
+    }
     
-    failed.lastId = id;     //just in case
-    failed.lastIndex = index;
 
     //TODO: check if url is already done or OVERRIDE
     var url = baseUrl + "/" + id;
@@ -164,12 +170,14 @@ function processId(id, index, retry) {
             
             if (VERBOSE) console.log("Next ID:", data.nextID);
             
+            failed.lastId = id;     //just in case
+
+            
             if (data.nextID)
                 processId(data.nextID, index+1);
             else {
                 //onFinished(false);
                 if(VERBOSE) console.log("Finished processing normally");
-                failed.lastId = 0;
             }
             //console.log("DEBUG", data)
             downloadImageOrRetry(id, data.image, PATH_IMG + id + ".jpg");
@@ -183,10 +191,12 @@ function processId(id, index, retry) {
             js.writeFile(PATH_SINGLE_DATA + id + ".json", data, function (err) {
                 if (err) return console.error("Error writing json single-data file!", id, err);
             });
-
+            
+            writeFailedFile();
 
         }
         , function (err) {
+
             printError(err);
             if (retry <= RETRIES) {
                 processId(id, index, retry+1);     //Try once more...
@@ -214,15 +224,17 @@ try {
 if('from' in opt.options) {
     processId(opt.options.from, !opt.options.forget?failed.lastIndex:0);
 }
-else if (failed.lastId && !opt.options.forget) {
+else if (/*failed.lastId*/ failed.firstId && !opt.options.forget) {
     console.log("Resuming from "+failed.lastId)
-    processId(failed.lastId, failed.lastIndex);
+    //processId(failed.lastId, failed.lastIndex);
+    processId(failed.firstId, failed.lastIndex);
 }
 else {
     if (VERBOSE) console.log("Finding first ID...");
     info.findLastPage(baseUrl + "/mosaic", function (url) {
         info.findFirstPhotoID(url, function (id) {
             if (VERBOSE) console.log("Found first id: " + id + ".");
+            failed.firstId = id;
             processId(id);
         }, printError)
     }, printError)
