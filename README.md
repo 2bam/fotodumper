@@ -1,24 +1,35 @@
-# FOTODUMPER
-Download entirely http://fotolog.com account. Photos, and comments, ready to parse and visualize.
-This script parses the html code of fotolog, and download the images and create a JSON with the data.
 
-ALSO INCLUDES "protolog" a very simple html fotolog like visualizer !!!!!!!!!!111
+# FOTODUMPER v2
+Based on fotodumber by @armdz
+Download entire http://fotolog.com account. Photos, comments, and extra data.
+Saved as json, ready to parse and visualize.
+ALSO INCLUDES "protolog" a very simple html fotolog like visualizer.
 
 The downloaded files are in a folder thats is named as the fotolog account, with all the files inside.
 
-# USE (template and node_modules folders, ARE NEEDED)
-its made with node.js, 2 params:
+# USAGE (template and node_modules folders, ARE NEEDED)
 
-node fotodump.js USERNAME FIRST_PHOTO_ID
+node fotodump.js <fotolog-username>
 
-to obtain the FIRST_PHOTO_ID you need to go to the fotolog, and go to the first photo and take the id from the url, the id is: http://fotolog.com/username/THIS_IS_THE_ID
+fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
+
+Full usage: node fotodump.js [OPTION] <fotolog-username>
+Fotolog account dumper v2
+  -r, --retry=ARG    retry download times (default 10)
+  -f, --from=ARG     starts from a different pic id
+  -t, --timeout=ARG  seconds to timeout request (default 5)
+  -h, --help         display this help
+  -v, --verbose      verbose output
 
 # NOTES
-i made this in case fotologs stop his activity, and i like to preserve that teen part of my life.
-THE CODE IS VERY DIRTY, BUT WORKS!
+This was made in case fotologs stop his activity, and to preserve part of the author's my life.
+Under the impending pressure of fotolog closing, I've done the same.
+
+[Important!] Sometimes fotolog doesn't send the comments for some reason ($!#"%$)! This is taken as an error, and the extraction it's retried.
+There is no way to determine photos without any actual comments, for this reason if it runs out of retries, it just saves the data without comments if this is the source of the failure.
 
 # KEYS
+For protolog, use 'q' and 'w' to navigate the photos withouth the mouse!
 
-[new feature!!!!!!!!] use 'q' and 'w' to navigate the photos withouth f*cking clicks!
-
-http://armdz.com
+http://armdz.com (Original author)
+http://2bam.com (This version's)

@@ -18,11 +18,12 @@ function downloadImage(url, filename, callback) {
 function convertToLolos(data) {
     var lolo_data = {};
     lolo_data.imagen_path = data.image;
-    lolo_data.proxima = data.nextCrawl;
+    lolo_data.proxima = data.nextID;
     lolo_data.titulo = data.title;
     lolo_data.descripcion = data.description;
     lolo_data.fecha = data.date;
     lolo_data.vistas = data.views;
+    lolo_data.imagen_nombre = data.id + ".jpg";
     lolo_data.comentarios = [];
     for (var i = 0; i < data.comments.length; i++) {
         var lc = {};

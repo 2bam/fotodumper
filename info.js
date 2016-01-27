@@ -8,7 +8,7 @@ var request = require("request");
 
 module.exports.findFirstPhotoID = findFirstPhotoID;
 module.exports.findLastPage = findLastPage;
-module.exports.extractInfo = extractInfo;
+module.exports.extractData = extractData;
 
 function replaceAll(what, from, to) {
     while (what.indexOf(from) != -1) {
@@ -28,34 +28,37 @@ function fixHTML(html) {
     return x;
 }
 
-
-
 //onSuccess(info object)
-function extractInfo(url, onSuccess) {
-    request(url, function (error, response, body) {
+function extractData(url, lastTry, onSuccess, onError) {
+    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var $ = cheerio.load(body);
             
             var data = {}
-
+            
             data.image = $('a.wall_img_container_big').find("img").attr("src");
-            data.nextCrawl = $('a.arrow_change_photo').attr("href");
+            var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
+            if (nextPage.length) {
+                nextPage = nextPage.attr("href");
+                data.nextID = nextPage.split("/")[nextPage.split("/").length - 2];
+            }
+            else
+                data.nextID = undefined;
             
             var has_title = $('div #description_photo').find("h1");
             if (has_title.length) data.title = has_title.first().text();
             else data.title = "";
-
+            
             var descBody = $('div #description_photo').find("p");
             data.views = descBody.find("span.flog_block_views").find("b").text();
             
             var bodyHtml = descBody.html();
             data.description = fixHTML(bodyHtml.substring(0, bodyHtml.indexOf("<br class=\"clear\">")));
             
-
-            //FIXME: Falta date!!!
-            data.date = "??"
-
-
+            
+            var asd = '<br class="clear"><br class="clear"><br class="clear">\n';
+            data.date = bodyHtml.substring(bodyHtml.indexOf(asd) + asd.length, bodyHtml.indexOf('<span class="flog_block_views float_right">'));
+            
             //From lolo's code
             //var img_desc_raw = descBody.html();
             //var img_desc = img_desc_raw.substring(img_desc_raw.indexOf("</h1>") + 8, img_desc_raw.indexOf("flog_block_views float_right"));
@@ -84,7 +87,7 @@ function extractInfo(url, onSuccess) {
                 var comment = {}
                 comment.author = author.text();
                 comment.authorUrl = author.attr("href");
-
+                
                 var html = tag.html();
                 var date_end = html.indexOf("<br>");
                 comment.date = html.substring(html.indexOf("</b>") + 4, date_end);
@@ -95,26 +98,24 @@ function extractInfo(url, onSuccess) {
                 //console.log(comment);
             })
             
-            if (commentDetect <= 1)       //TODO: Mark as bogus, reload!
-                console.log("Error: Bogus comments section, no comments! Queueing for retry")
-            
-   
-
-            
-            console.log(data);
-
+            if (commentDetect <= 1 && !lastTry)       //TODO: Mark as bogus, reload!
+                onError(["Bogus comments section, no comments", url, error, response]);
+            else if (VERBOSE) {
+                console.log(commentDetect + " comments saved");
+                onSuccess(data)
+            }
 
             //onSuccess(lastUrl)
         }
         else {
-            console.log("Error:", url, error, response);
+            onError(["Extract info", url, error, response]);
         }
     }) 
 }
 
-function findFirstPhotoID(url, onSuccess) {
+function findFirstPhotoID(url, onSuccess, onError) {
     var ret;
-    request(url, function (error, response, body) {
+    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var $ = cheerio.load(body);
 
@@ -136,13 +137,13 @@ function findFirstPhotoID(url, onSuccess) {
             //})
         }
         else {
-            log("Error:", url, error, response);
+            onError(["Find first photo ID", url, error, response]);
         }
     })
 }
 
 function findLastPage(url, onSuccess, onError) {
-    request(url, function (error, response, body) {
+    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var $ = cheerio.load(body);
             
@@ -155,7 +156,7 @@ function findLastPage(url, onSuccess, onError) {
             onSuccess(lastUrl)
         }
         else {
-            onError([func, url, error, response]);
+            onError(["Find last page", url, error, response]);
         }
     })
 }
