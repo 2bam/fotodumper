@@ -1,5 +1,5 @@
 .ntvs_analysis.dat
 /.vs
 /bin
-/nitram_cero2
 /obj
+.ntvs_analysis.dat.tmp

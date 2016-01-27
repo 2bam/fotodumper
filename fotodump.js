@@ -124,8 +124,10 @@ function processId(id, index, retry) {
     while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
         skip = js.readFileSync(PATH_SINGLE_DATA + id + ".json");
         
-        skip.index = idx++;
-        skip = js.writeFileSync(PATH_SINGLE_DATA + id + ".json");
+        if (!skip) break;   //on error in .json, redownload
+
+        //skip.index = idx++;
+        //skip = js.writeFileSync(PATH_SINGLE_DATA + id + ".json");
         
         success.push(id);
 
@@ -208,7 +210,7 @@ try {
 
     
 if('from' in opt.options) {
-    processId(opt.options.from);
+    processId(opt.options.from, !opt.options.forget?failed.lastIndex:0);
 }
 else if (failed.lastId && !opt.options.forget) {
     console.log("Resuming from "+failed.lastId)
