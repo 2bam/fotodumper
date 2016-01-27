@@ -14,7 +14,7 @@ opt = require('node-getopt').create([
     , [''  , 'forget'                , "don't start from where we left"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
     , ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
-    , ['x' , 'force-download']       , 'redownload even if pressent in data/ and img/']
+    , ['x' , 'force-download'        , 'redownload even if pressent in data/ and img/']
     , ['t' , 'timeout=ARG'           , 'seconds to timeout request (default 5)']
     , ['d' , 'dont-assemble'         , 'do not assemble protolog when finished processing']
     , ['h' , 'help'                  , 'display this help']
