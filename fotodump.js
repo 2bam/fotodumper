@@ -14,7 +14,7 @@ opt = require('node-getopt').create([
     , [''  , 'forget'                , "don't start from where we left"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
     , ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
-    , ['x' , 'force-download']       , 'redownload even if pressent in data/ and img/']
+    , ['x' , 'force-download'        , 'redownload even if pressent in data/ and img/']
     , ['t' , 'timeout=ARG'           , 'seconds to timeout request (default 5)']
     , ['d' , 'dont-assemble'         , 'do not assemble protolog when finished processing']
     , ['h' , 'help'                  , 'display this help']
@@ -220,12 +220,10 @@ else if (failed.lastId && !opt.options.forget) {
 }
 else {
     if (VERBOSE) console.log("Finding first ID...");
-    info.findLastPage(baseUrl + "/mosaic", function (url) {
-        info.findFirstPhotoID(url, function (id) {
-            if (VERBOSE) console.log("Found first id: " + id + ".");
-            processId(id);
-        }, printError)
-    }, printError)
+    info.findFirstPhotoID(baseUrl, function (id) {
+        if (VERBOSE) console.log("Found first id: " + id + ".");
+        processId(id);
+    }, printError);
 }
 
 //info.extractInfo("http://www.fotolog.com/nitram_cero2/8008729/");
