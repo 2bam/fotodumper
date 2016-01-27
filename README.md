@@ -1,6 +1,8 @@
 
 # FOTODUMPER v2
 Based on fotodumper by @armdz
+This version intends to be more robust against errors and server discrepancies (you wouldn't believe how many there are)
+
 Download entire http://fotolog.com account. Photos, comments, and extra data.
 Saved as json, ready to parse and visualize.
 ALSO INCLUDES "protolog" a very simple html fotolog like visualizer.
@@ -15,14 +17,15 @@ If you stop (or it fails enought times), it continues from the last id that fail
 
 `node fotodump.js <fotolog-username>`
 
-**(template and node_modules folders, ARE NEEDED)**
-
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
+
+**(Remember template and node_modules folders, ARE NEEDED)**
 
 If for some reason it fails (e.g. sometimes last thumbnail pages are blank...), you must look the FIRST picture you posted and force to download it:
 
 `node fotodump.js <fotolog-username> -f <first-image-number>`
-(If your first image EVER's link is: http://www.fotolog.com/username/12345, use `node fotodump.js _username_ -f 12345`)
+
+(If your first image EVER's link is: http://www.fotolog.com/username/12345, use `node fotodump.js username -f 12345`)
 
 Full usage:
 ```
@@ -51,6 +54,20 @@ There is no way to determine photos without any actual comments, for this reason
 # KEYS
 For protolog, use 'q' and 'w' to navigate the photos withouth the mouse!
 
+# ROBUSTNESS
+Sometimes connections time out.
+Sometimes the server says there's no user by that name.
+Sometimes it doesn't send the comments.
+In some pictures, pressing the left arrow sends you straight to the first photo.
+...but can be saved by another link, which sometimes _is also missing (sigh)..._
+If something gets stuck, you can Ctrl+C and continue from the last failed photo.
+
+I try to workaround all these weird behaviours.
+
+# AUTHORS
+
 http://armdz.com (Original author)
 
 http://2bam.com (This version's)
+
+## In memoriam: Bunny
