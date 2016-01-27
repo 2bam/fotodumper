@@ -11,13 +11,15 @@ The output will be a lot of "." and "i" for successful image and "Ex" for errors
 
 If you stop (or it fails enought times), it continues from the last id that failed
 
-# USAGE (template and node_modules folders, ARE NEEDED)
+# USAGE
 
-`node fotodump.js fotolog-username`
+`node fotodump.js <fotolog-username>`
+
+**(template and node_modules folders, ARE NEEDED)**
 
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
 
-If for some reason it fails (sometimes last pages are blank...), you must look the FIRST picture you posted and force to download it:
+If for some reason it fails (e.g. sometimes last thumbnail pages are blank...), you must look the FIRST picture you posted and force to download it:
 
 `node fotodump.js <fotolog-username> -f <first-image-number>`
 (If your first image EVER's link is: http://www.fotolog.com/_username_/**12345**, use `node fotodump.js _username_ -f 12345`)
@@ -41,8 +43,8 @@ Also, you can call: ```node fotoassemble.js <fotolog-username>``` to create the 
 This was made in case fotologs stop his activity, and to preserve part of the author's my life.
 Under the impending pressure of fotolog closing, I've done the same.
 
-[Important!] Sometimes fotolog doesn't send the comments for some reason ($!#"%$)! Sometimes fotolog says THE USER DOESN'T EXIST!
-Also take into account that the number of photos that fotolog says you, might not be the true amount.
+## Important!
+Sometimes fotolog _doesn't send the comments_ for some reason ($!#"%$)! Sometimes fotolog says _THE USER DOESN'T EXIST!_
 This is taken as an error, and the extraction it's retried.
 There is no way to determine photos without any actual comments, for this reason if it runs out of retries, it just saves the data without comments if this is the source of the failure.
 
@@ -50,4 +52,5 @@ There is no way to determine photos without any actual comments, for this reason
 For protolog, use 'q' and 'w' to navigate the photos withouth the mouse!
 
 http://armdz.com (Original author)
+
 http://2bam.com (This version's)
