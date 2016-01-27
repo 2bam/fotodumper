@@ -11,7 +11,7 @@ opt = require('node-getopt').create([
     //['m' , 'multi-with-arg=ARG+' , 'multiple option with argument']
 
       ['r' , 'retry=ARG'             , 'retry download times (default 10)']
-    , [''  , 'forget'                , "don't start from where we left"]
+    , [''  , 'forget'                , "don't start from first found id"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
     //, ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
     , ['x' , 'force-download'        , 'redownload even if pressent in data/ and img/']
