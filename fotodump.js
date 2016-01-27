@@ -11,9 +11,9 @@ opt = require('node-getopt').create([
     //['m' , 'multi-with-arg=ARG+' , 'multiple option with argument']
 
       ['r' , 'retry=ARG'             , 'retry download times (default 10)']
-    , [''  , 'forget'                , "don't start from where we left"]
+    , [''  , 'forget'                , "don't start from first found id"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
-    , ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
+    //, ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
     , ['x' , 'force-download'        , 'redownload even if pressent in data/ and img/']
     , ['t' , 'timeout=ARG'           , 'seconds to timeout request (default 5)']
     , ['d' , 'dont-assemble'         , 'do not assemble protolog when finished processing']
@@ -42,13 +42,16 @@ const RETRIES = 'retry' in opt.options ? parseInt(opt.options.retry) : 10;
 const SKIP = !opt.options["force-download"]; //opt.options["skip-downloaded"];
 //if (VERBOSE) console.log({ timeout: GLOBAL.TIMEOUT, retry: RETRIES });
 
+console.log(SKIP?"+Will skip correctly downloaded ones":"+Will download everything again")
+
 var baseUrl = "http://fotolog.com/" + opt.argv[0];
 var localUri = opt.argv[0];
 var failed = {
     extracts: [],
     images: [],
-    lastId: 0,
-    lastIndex: 0
+    lastId: 0,          //unused
+    lastIndex: 0,
+    firstId: 0
 };
 var success = [];
 
@@ -106,6 +109,8 @@ function downloadImageOrRetry(id, url, local, retry) {
         }
         , function (err) {
             printError(err);
+            failed.lastIndex = index;
+
             if (retry <= RETRIES) {
                 downloadImageOrRetry(id, url, local, retry + 1);     //Try once more...
             }
@@ -122,7 +127,7 @@ function processId(id, index, retry) {
     if (!index) index = 0;
     
     var idx = 0;
-    while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
+    while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.statSync(PATH_IMG + id + ".jpg").size != 0 && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
         skip = js.readFileSync(PATH_SINGLE_DATA + id + ".json");
         
         if (!skip) break;   //on error in .json, redownload
@@ -144,11 +149,12 @@ function processId(id, index, retry) {
         }
     }
     
-
+    failed.lastId = id;
+    if (failed.lastIndex < index) {
+        failed.lastIndex = index;
+    }
     
-    failed.lastId = id;     //just in case
-    failed.lastIndex = index;
-
+        
     //TODO: check if url is already done or OVERRIDE
     var url = baseUrl + "/" + id;
     
@@ -169,7 +175,6 @@ function processId(id, index, retry) {
             else {
                 //onFinished(false);
                 if(VERBOSE) console.log("Finished processing normally");
-                failed.lastId = 0;
             }
             //console.log("DEBUG", data)
             downloadImageOrRetry(id, data.image, PATH_IMG + id + ".jpg");
@@ -183,10 +188,13 @@ function processId(id, index, retry) {
             js.writeFile(PATH_SINGLE_DATA + id + ".json", data, function (err) {
                 if (err) return console.error("Error writing json single-data file!", id, err);
             });
+            
 
+            writeFailedFile();
 
         }
         , function (err) {
+
             printError(err);
             if (retry <= RETRIES) {
                 processId(id, index, retry+1);     //Try once more...
@@ -207,16 +215,20 @@ console.log("\nSTARTING...");
 
 try {
     temp = js.readFileSync(PATH_SINGLE_DATA + "failed.json");
-    if (temp) failed = temp
+    if (temp) {
+        failed = temp
+        failed.lastIndex++; //just in case add one forward to avoid redundancies when loading fail-handling data
+    }
 } catch (e) { }
 
     
 if('from' in opt.options) {
     processId(opt.options.from, !opt.options.forget?failed.lastIndex:0);
 }
-else if (failed.lastId && !opt.options.forget) {
-    console.log("Resuming from "+failed.lastId)
-    processId(failed.lastId, failed.lastIndex);
+else if (/*failed.lastId*/ failed.firstId && !opt.options.forget) {
+    console.log("Resuming from first (recorded):"+failed.firstId)
+    //processId(failed.lastId, failed.lastIndex);
+    processId(failed.firstId, failed.lastIndex);
 }
 else {
     if (VERBOSE) console.log("Finding first ID...");
@@ -225,10 +237,6 @@ else {
         processId(id);
     }, printError);
 }
-
-//info.extractInfo("http://www.fotolog.com/nitram_cero2/8008729/");
-//info.extractInfo("http://www.fotolog.com/nitram_cero2/32676842/");
-
 
 var _flagCheck = setInterval(function () {
     if (ACTIVE == 0) {
