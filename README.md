@@ -70,4 +70,4 @@ http://armdz.com (Original author)
 
 http://2bam.com (This version's)
 
-## In memoriam: Bunny
+## In memoriam: _c_bunny_
