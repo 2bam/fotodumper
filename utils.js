@@ -21,7 +21,7 @@ function downloadImage(url, filename, onSuccess, onError) {
             request(url).pipe(fs.createWriteStream(filename)).on('close', function () { ACTIVE--; onSuccess() });
         }
         else
-            onError(["Downloading image", url, err, res]);
+            onError(["Downloading image", url, error, response]);
 
     });
 };

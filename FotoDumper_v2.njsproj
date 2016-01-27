@@ -29,6 +29,7 @@
     <Compile Include="fotodump.js" />
     <Content Include="nitram_cero2\index.html" />
     <Content Include="nitram_cero2\data.json" />
+    <Content Include="READMORE.md" />
     <Content Include="template\index.html" />
     <Content Include="nitram_cero2\img\1089347468_f.jpg" />
     <Content Include="nitram_cero2\img\1089615090_f.jpg" />

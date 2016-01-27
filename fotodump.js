@@ -13,7 +13,8 @@ opt = require('node-getopt').create([
       ['r' , 'retry=ARG'             , 'retry download times (default 10)']
     , [''  , 'forget'                , "don't start from where we left"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
-    , ['s' , 'skip-downloaded'       , 'skips photos already in data/ or img/']
+    , ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
+    , ['x' , 'force-download']       , 'redownload even if pressent in data/ and img/']
     , ['t' , 'timeout=ARG'           , 'seconds to timeout request (default 5)']
     , ['d' , 'dont-assemble'         , 'do not assemble protolog when finished processing']
     , ['h' , 'help'                  , 'display this help']
@@ -38,7 +39,7 @@ if (opt.argv.length != 1) {
 GLOBAL.VERBOSE = (opt.options.verbose?true:false);
 GLOBAL.TIMEOUT = ('timeout' in opt.options ? parseInt(opt.options.timeout) : 5) * 1000;
 const RETRIES = 'retry' in opt.options ? parseInt(opt.options.retry) : 10;
-const SKIP = opt.options["skip-downloaded"];
+const SKIP = !opt.options["force-download"]; //opt.options["skip-downloaded"];
 //if (VERBOSE) console.log({ timeout: GLOBAL.TIMEOUT, retry: RETRIES });
 
 var baseUrl = "http://fotolog.com/" + opt.argv[0];
@@ -137,6 +138,7 @@ function processId(id, index, retry) {
         id = skip.nextID;
        
         if (!id) {
+            failed.lastId = 0;
             if (VERBOSE) console.log("No more to skip to...");
             return;
         }

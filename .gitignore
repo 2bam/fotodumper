@@ -3,3 +3,11 @@
 /bin
 /obj
 .ntvs_analysis.dat.tmp
+*/index.html
+*/web
+*/data
+*/js
+!template/**
+*.DS_Store
+*/data.json
+*/img/*
