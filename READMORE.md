@@ -1,4 +1,10 @@
-﻿
+﻿# Output
+In non-verbose mode:
+* `_` means skipped file
+* `.` means downloaded data (message, comments...)
+* `i` means downloaded image/photo
+* `En` means error and `n` is the retry number. These may be safe if there were actually no comments.
+
 # Extended usage:
 ```
 Usage: node fotodump.js [OPTION] <fotolog-username>
