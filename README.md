@@ -13,24 +13,29 @@ If you stop (or it fails enought times), it continues from the last id that fail
 
 # USAGE (template and node_modules folders, ARE NEEDED)
 
-`node fotodump.js **fotolog-username**`
+`node fotodump.js fotolog-username`
 
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
 
 If for some reason it fails (sometimes last pages are blank...), you must look the FIRST picture you posted and force to download it:
 
-node fotodump.js <fotolog-username> -f <first-image-number>
-(If your first image EVER's link is: http://www.fotolog.com/username/12345, use "node fotodump.js username -f 12345")
+`node fotodump.js <fotolog-username> -f <first-image-number>`
+(If your first image EVER's link is: http://www.fotolog.com/_username_/**12345**, use `node fotodump.js _username_ -f 12345`)
 
-Full usage: node fotodump.js [OPTION] <fotolog-username>
-Fotolog account dumper v2
-  -r, --retry=ARG    retry download times (default 10)
-  -f, --from=ARG     starts from a different pic id
-  -t, --timeout=ARG  seconds to timeout request (default 5)
-  -h, --help         display this help
-  -v, --verbose      verbose output
+Full usage:
+```
+Usage: node fotodump.js [OPTION] <fotolog-username>
 
-  Also, you can call: node fotoassemble.js <fotolog-username> to create the protolog from all downloaded data (if you had trouble or needed multiple passes)
+  -r, --retry=ARG        retry download times (default 10)
+      --forget           don't start from where we left
+  -f, --from=ARG         starts from a different pic id
+  -s, --skip-downloaded  skips photos already in data/ or img/
+  -t, --timeout=ARG      seconds to timeout request (default 5)
+  -d, --dont-assemble    do not assemble protolog when finished processing
+  -h, --help             display this help
+  -v, --verbose          verbose output
+```
+Also, you can call: ```node fotoassemble.js <fotolog-username>``` to create the protolog from all downloaded data (if you had trouble or needed multiple passes)
 
 # NOTES
 This was made in case fotologs stop his activity, and to preserve part of the author's my life.
