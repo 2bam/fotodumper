@@ -40,10 +40,42 @@ function extractData(url, lastTry, onSuccess, onError) {
                 var data = {}
                 
                 data.image = $('a.wall_img_container_big').find("img").attr("src");
-                var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
-                if (nextPage.length) {
+                
+                var nextPage = 0; nextPageBis = 0;
+                try {
+                    var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
                     nextPage = nextPage.attr("href");
-                    data.nextID = nextPage.split("/")[nextPage.split("/").length - 2];
+                    nextPage = nextPage.split("/")[nextPage.split("/").length - 2];
+                    //console.log("nextPage   =" + nextPage);
+
+                }
+                catch (e) {
+                }
+
+                try {
+                    nextPageBis = $('li').has('a.wall_img_container.wall_img_container_current');
+                    nextPageBis = nextPageBis.prev().children(":first-child");
+                    nextPageBis = nextPageBis.attr("href");
+                    //console.log("nextPageBis=" + nextPageBis);
+
+                    nextPageBis = nextPageBis.split("/")[nextPageBis.split("/").length - 2];
+                } catch (e) {
+                }
+                
+                //if (nextPageBis && nextPageBis != nextPage) {
+                if (nextPageBis && nextPageBis > nextPage) {
+                     //HACK: Sometimes the arrow will throw you to the first photo (maybe a photo was erased between?)
+                     //     But if there is a thumbnail below the pic, it might give us the correct solution (sometimes it fails thou)
+                     //FIXME: maybe here's the key...
+                     //Need to solve: http://www.fotolog.com/_c_bunny_/10468463/
+                    console.log("\nMismatched", "nextPage   =",nextPage, "nextPageBis=", nextPageBis);
+                    data.nextID = nextPageBis;
+                     
+                }
+                else if (nextPage) {
+                    //console.log(nextPage)
+                    //nextPage = nextPage.attr("href");
+                    data.nextID = nextPage;
                 }
                 else
                     data.nextID = undefined;
@@ -187,7 +219,7 @@ function findLastPage(url, onSuccess, onError) {
 
         }
         else {
-            onError(["Find last page", url, error, response, e]);
+            onError(["Find last page", url, error, response]);
         }
     })
 }
