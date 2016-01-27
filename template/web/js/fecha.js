@@ -37,8 +37,12 @@ function	get_meses()
 	for(var i=0;i<fotos.length;i++)
 	{
 
-		var foto_fecha = fotos[i]["fecha"];
-		var foto_mes = foto_fecha.split(" ")[2];
+        var foto_fecha = fotos[i]["fecha"];
+        
+        var foto_mes = foto_fecha.trim().split(" ")[2];
+        if (parseInt(foto_mes)) foto_mes = foto.fecha.trim().split(" ")[1];        //En ingles: "On May 22 2010"
+        current_anio = foto_fecha.trim().split(" ")[3];
+
 		if(current_mes == "")
 		{
 			current_mes = foto_mes;
@@ -58,12 +62,12 @@ function	get_meses()
 				coment_counter = 0;
 				vistas_counter = 0;
 				current_mes = foto_mes;
-				current_anio = foto_fecha.split(" ")[3];
+				
 			}
 		}
 		
 		var current_foto_div = header_div_foto;
-		current_foto_div+="<a target=\"blank\" href=\"../index.html?id=" + i +"\"><img class=\"img_fecha\" src=\"" + fotos[i]["imagen_path"] + "\"></a>";
+		current_foto_div+="<a target=\"blank\" href=\"../index.html?id=" + i +"\"><img class=\"img_fecha\" src=\"../img/" + fotos[i]["imagen_nombre"] + "\"></a>";
 		current_foto_div+="</div>";
 		coment_counter+=Number(fotos[i]["comentarios"].length);
 		vistas_counter+=Number(fotos[i]["vistas"]);

@@ -30,79 +30,89 @@ function fixHTML(html) {
 
 //onSuccess(info object)
 function extractData(url, lastTry, onSuccess, onError) {
-    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+    ACTIVE++;
+    req = request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+        ACTIVE--;
         if (!error && response.statusCode == 200) {
-            var $ = cheerio.load(body);
-            
-            var data = {}
-            
-            data.image = $('a.wall_img_container_big').find("img").attr("src");
-            var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
-            if (nextPage.length) {
-                nextPage = nextPage.attr("href");
-                data.nextID = nextPage.split("/")[nextPage.split("/").length - 2];
+            try {
+                var $ = cheerio.load(body);
+                
+                var data = {}
+                
+                data.image = $('a.wall_img_container_big').find("img").attr("src");
+                var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
+                if (nextPage.length) {
+                    nextPage = nextPage.attr("href");
+                    data.nextID = nextPage.split("/")[nextPage.split("/").length - 2];
+                }
+                else
+                    data.nextID = undefined;
+                
+                var has_title = $('div #description_photo').find("h1");
+                if (has_title.length) data.title = has_title.first().text();
+                else data.title = "";
+                
+                var descBody = $('div #description_photo').find("p");
+                data.views = descBody.find("span.flog_block_views").find("b").text();
+                
+                var bodyHtml = descBody.html();
+                data.description = fixHTML(bodyHtml.substring(0, bodyHtml.indexOf("<br class=\"clear\">")));
+                
+                
+                var asd = '<br class="clear"><br class="clear"><br class="clear">\n';
+                data.date = bodyHtml.substring(bodyHtml.indexOf(asd) + asd.length, bodyHtml.indexOf('<span class="flog_block_views float_right">'));
+                
+                //From lolo's code
+                //var img_desc_raw = descBody.html();
+                //var img_desc = img_desc_raw.substring(img_desc_raw.indexOf("</h1>") + 8, img_desc_raw.indexOf("flog_block_views float_right"));
+                
+                ////title ??
+                //data.title = img_desc_raw.substring(img_desc_raw.indexOf("<h1>") + 4, img_desc_raw.indexOf("</h1>"));
+                //data.date = img_desc.substring(img_desc.indexOf("<br class=\"clear\">") + ("<br class=\"clear\"><br class=\"clear\"><br class=\"clear\">").length + 1, img_desc.length - 14);
+                
+                //img_desc = img_desc.substring(0, img_desc.indexOf("<br class=\"clear\">"));
+                //img_desc = replaceAll(img_desc, "<br>", "\n");
+                //img_desc = replaceAll(img_desc, "<span style=\"font-style: italic;\">", "");
+                //img_desc = replaceAll(img_desc, "<span style=\"font-style: bold;\">", "");
+                //img_desc = replaceAll(img_desc, "</span>", "");  //  descripcion
+                //data.description = img_desc;
+                //
+                
+                
+                data.comments = [];
+                var commentDetect = 0;
+                $('div.flog_img_comments').not('#comment_form').each(function (i, elem) {
+                    //if (i == 0) return; //Skip first ("log in to comment...")
+                    
+                    commentDetect++;
+                    
+                    var tag = $(this).find("p");
+                    var author = tag.find("a");
+                    var comment = {}
+                    comment.author = author.text();
+                    comment.authorUrl = author.attr("href");
+                    
+                    var html = tag.html();
+                    var date_end = html.indexOf("<br>");
+                    comment.date = html.substring(html.indexOf("</b>") + 4, date_end);
+                    
+                    comment.text = fixHTML(html.substr(html.indexOf("<br><br>\n") + 9));
+                    
+                    data.comments.push(comment);
+                    //console.log(comment);
+                })
+
             }
-            else
-                data.nextID = undefined;
-            
-            var has_title = $('div #description_photo').find("h1");
-            if (has_title.length) data.title = has_title.first().text();
-            else data.title = "";
-            
-            var descBody = $('div #description_photo').find("p");
-            data.views = descBody.find("span.flog_block_views").find("b").text();
-            
-            var bodyHtml = descBody.html();
-            data.description = fixHTML(bodyHtml.substring(0, bodyHtml.indexOf("<br class=\"clear\">")));
-            
-            
-            var asd = '<br class="clear"><br class="clear"><br class="clear">\n';
-            data.date = bodyHtml.substring(bodyHtml.indexOf(asd) + asd.length, bodyHtml.indexOf('<span class="flog_block_views float_right">'));
-            
-            //From lolo's code
-            //var img_desc_raw = descBody.html();
-            //var img_desc = img_desc_raw.substring(img_desc_raw.indexOf("</h1>") + 8, img_desc_raw.indexOf("flog_block_views float_right"));
-            
-            ////title ??
-            //data.title = img_desc_raw.substring(img_desc_raw.indexOf("<h1>") + 4, img_desc_raw.indexOf("</h1>"));
-            //data.date = img_desc.substring(img_desc.indexOf("<br class=\"clear\">") + ("<br class=\"clear\"><br class=\"clear\"><br class=\"clear\">").length + 1, img_desc.length - 14);
-            
-            //img_desc = img_desc.substring(0, img_desc.indexOf("<br class=\"clear\">"));
-            //img_desc = replaceAll(img_desc, "<br>", "\n");
-            //img_desc = replaceAll(img_desc, "<span style=\"font-style: italic;\">", "");
-            //img_desc = replaceAll(img_desc, "<span style=\"font-style: bold;\">", "");
-            //img_desc = replaceAll(img_desc, "</span>", "");  //  descripcion
-            //data.description = img_desc;
-            //
-            
-            
-            data.comments = [];
-            var commentDetect = 0;
-            $('div.flog_img_comments').each(function (i, elem) {
-                commentDetect++;
-                if (i == 0) return; //Skip first ("log in to comment...")
-                
-                var tag = $(this).find("p");
-                var author = tag.find("a");
-                var comment = {}
-                comment.author = author.text();
-                comment.authorUrl = author.attr("href");
-                
-                var html = tag.html();
-                var date_end = html.indexOf("<br>");
-                comment.date = html.substring(html.indexOf("</b>") + 4, date_end);
-                
-                comment.text = fixHTML(html.substr(html.indexOf("<br><br>\n") + 9));
-                
-                data.comments.push(comment);
-                //console.log(comment);
-            })
-            
-            if (commentDetect <= 1 && !lastTry)       //TODO: Mark as bogus, reload!
+            catch (e) {
+                //Sometimes fotolog says THE USER DOESN'T EXIST (!"#$!#%)
+                onError(["Error in exctraction, probably server's fault", url, error, response, e]);
+                return;
+            }
+            if (commentDetect <= 0 && !lastTry)       //TODO: Mark as bogus, reload!
                 onError(["Bogus comments section, no comments", url, error, response]);
-            else if (VERBOSE) {
-                console.log(commentDetect + " comments saved");
-                onSuccess(data)
+            else {
+                if (VERBOSE) console.log("Data and " + commentDetect + " comments saved");
+                onSuccess(data);
             }
 
             //onSuccess(lastUrl)
@@ -110,25 +120,37 @@ function extractData(url, lastTry, onSuccess, onError) {
         else {
             onError(["Extract info", url, error, response]);
         }
-    }) 
+    })
 }
 
 function findFirstPhotoID(url, onSuccess, onError) {
-    var ret;
-    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+    ACTIVE++;
+    req = request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+        ACTIVE--;
         if (!error && response.statusCode == 200) {
-            var $ = cheerio.load(body);
+            try {
+                
+                var $ = cheerio.load(body);
 
-            var lastTag;
-            $('a.wall_img_container').each(function (i, elem) {
-                log($(this))
-                lastTag = $(this)
-            })
-            
-			picUrl = String(lastTag.attr("href"));
-            picID = picUrl.substring(picUrl.lastIndexOf('/', picUrl.length-2)+1, picUrl.length-1);
-            console.log("last=", picUrl);
-            console.log("pic ID=", picID);
+                var lastTag;
+                $('a.wall_img_container').each(function (i, elem) {
+                    //log($(this))
+                    lastTag = $(this)
+                })
+                
+			    picUrl = String(lastTag.attr("href"));
+                picID = picUrl.substring(picUrl.lastIndexOf('/', picUrl.length-2)+1, picUrl.length-1);
+                //console.log("last=", picUrl);
+                //console.log("pic ID=", picID);
+            }
+            catch (e) {
+                console.log("");
+                console.log("Problem processing last page. It's probably blank.");
+                console.log("Please use 'node fotodump.js USERNAME -f FIRST_PHOTO_NUMBER'");
+                console.log("(If your first image EVER's link is: http://www.fotolog.com/USERNAME/12345, use 'node fotodump.js USERNAME -f 12345 '");
+                onError(["Problem processing last page", url, error, response, e]);
+                return;
+            }
             onSuccess(picID);
 
             //$('#list_photos_mosaic').children().each(function (i, elem) {
@@ -143,20 +165,29 @@ function findFirstPhotoID(url, onSuccess, onError) {
 }
 
 function findLastPage(url, onSuccess, onError) {
-    request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+    ACTIVE++;
+    req = request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
+        ACTIVE--;
         if (!error && response.statusCode == 200) {
             var $ = cheerio.load(body);
             
-            var lastTag;
-            $('div #pagination').children().filter("a").each(function (i, elem) {
-                lastTag = $(this);
-            })
-            var lastUrl = lastTag.attr("href");
-            console.log("Opening last url: " + lastUrl)
-            onSuccess(lastUrl)
+            try {
+                var lastTag;
+                $('div #pagination').children().filter("a").each(function (i, elem) {
+                    lastTag = $(this);
+                })
+                var lastUrl = lastTag.attr("href");
+                console.log("Opening last url: " + lastUrl);
+            }
+            catch (e) {     //Probably ONLY page
+                onSuccess(url);
+                return;
+            }
+            onSuccess(lastUrl);
+
         }
         else {
-            onError(["Find last page", url, error, response]);
+            onError(["Find last page", url, error, response, e]);
         }
     })
 }

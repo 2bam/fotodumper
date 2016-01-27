@@ -19,7 +19,7 @@
     <StartWebBrowser>False</StartWebBrowser>
     <DebuggerPort>
     </DebuggerPort>
-    <ScriptArguments>-v nitram_cero2</ScriptArguments>
+    <ScriptArguments>_c_bunny_ -s -v</ScriptArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />

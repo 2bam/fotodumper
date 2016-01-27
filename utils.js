@@ -1,6 +1,10 @@
 ﻿
+request = require('request');
+fs = require('node-fs-extra');
+
 GLOBAL.log = log
 module.exports.downloadImage = downloadImage;
+module.exports.convertToLolos = convertToLolos;
 
 function log() {
     return;  //fucking visual studio integration that gets an access violation...
@@ -8,10 +12,17 @@ function log() {
         console.log(arguments[i]);
 }
 
-function downloadImage(url, filename, callback) {
-    request.head(url, function (err, res, body) {
-        if(err )
-        request(url).pipe(fs.createWriteStream(filename)).on('close', callback, "lolo");
+function downloadImage(url, filename, onSuccess, onError) {
+    ACTIVE++;
+    req = request.head(url, function (error, response, body) {
+        ACTIVE--;
+        if (!error && response.statusCode == 200) {
+            ACTIVE++;
+            request(url).pipe(fs.createWriteStream(filename)).on('close', function () { ACTIVE--; onSuccess() });
+        }
+        else
+            onError(["Downloading image", url, err, res]);
+
     });
 };
 
@@ -25,6 +36,7 @@ function convertToLolos(data) {
     lolo_data.vistas = data.views;
     lolo_data.imagen_nombre = data.id + ".jpg";
     lolo_data.comentarios = [];
+    lolo_data.index = data.index;
     for (var i = 0; i < data.comments.length; i++) {
         var lc = {};
         var c = data.comments[i];
@@ -32,6 +44,7 @@ function convertToLolos(data) {
         lc.usuario = c.author;
         lc.fecha = c.date;
         lc.mensaje = c.text;
+        lolo_data.comentarios.push(lc);
     }
     return lolo_data;
 }

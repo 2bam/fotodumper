@@ -65,7 +65,7 @@ function showFoto(id)
 
 	var fotos = json_data["fotos"];
 
-	var foto_path = fotos[id]["imagen_path"];
+	var foto_path = "img/"+fotos[id]["imagen_nombre"];
 	var comentarios = fotos[id]["comentarios"];
 
 
@@ -84,7 +84,7 @@ function showFoto(id)
 		    var otra_foto_data = fotos[newindex];
 		    if(otra_foto_data != undefined){
 			   	var otra_foto_html = div_otra_foto_header;
-			   	otra_foto_html+="<a onclick='showFoto(" + (id+i) + ")'><img class='img_otra' src='" + otra_foto_data["imagen_path"] + "'></a>";
+			   	otra_foto_html+="<a onclick='showFoto(" + (id+i) + ")'><img class='img_otra' src='img/" + otra_foto_data["imagen_nombre"] + "'></a>";
 			   	otra_foto_html+="</div>";
 			   	$("#las_otras_fotos").append(otra_foto_html);
 		    }
