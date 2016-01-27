@@ -53,6 +53,12 @@ function loadData()
 
 }
 
+//http://stackoverflow.com/a/17606289
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 function showFoto(id)
 {
 
@@ -86,7 +92,7 @@ function showFoto(id)
     }
 
     $("#foto_desc").empty();
-    $("#foto_desc").append(decodeURIComponent(unescape(fotos[id]["descripcion"])));
+    $("#foto_desc").append(decodeURIComponent(unescape(fotos[id]["descripcion"].replaceAll("\n", "<br />"))));
 
     $("#foto_fecha").empty();
     $("#foto_fecha").append(decodeURIComponent(unescape(fotos[id]["fecha"])));
@@ -108,7 +114,7 @@ function showFoto(id)
 		comentario_html+="<div class='comentario_titulo'><b><a href=\"" + comentario["url"] + "\">" + decodeURIComponent(unescape(comentario["usuario"])) + "</a></b></div>";
 		comentario_html+="<div class='comentario_fecha'>" + decodeURIComponent(unescape(comentario["fecha"])) + "</div>";
 		comentario_html+="</div>";
-		comentario_html+="<div class='comentario_mensaje'>" + decodeURIComponent(unescape(comentario["mensaje"])) + "<br><br></div>";
+		comentario_html += "<div class='comentario_mensaje'>" + decodeURIComponent(unescape(comentario["mensaje"])).replaceAll("\n", "<br />") + "<br /><br /></div>";
 		comentario_html+=div_comentario_end;
 		$("#holder_comentarios").append(comentario_html);
 	}

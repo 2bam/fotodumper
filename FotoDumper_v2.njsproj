@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ae0139a7-5d1a-45bc-9d8e-0a4154d4243e}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>fotodump.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <NodeExeArguments>
+    </NodeExeArguments>
+    <NodejsPort>
+    </NodejsPort>
+    <StartWebBrowser>False</StartWebBrowser>
+    <DebuggerPort>
+    </DebuggerPort>
+    <ScriptArguments>-v nitram_cero2</ScriptArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Compile Include="fotoassemble.js" />
+    <Compile Include="fotodump.js" />
+    <Content Include="nitram_cero2\index.html" />
+    <Content Include="nitram_cero2\data.json" />
+    <Content Include="template\index.html" />
+    <Content Include="nitram_cero2\img\1089347468_f.jpg" />
+    <Content Include="nitram_cero2\img\1089615090_f.jpg" />
+    <Content Include="nitram_cero2\img\1089847122_f.jpg" />
+    <Content Include="nitram_cero2\img\1089895882_f.jpg" />
+    <Content Include="nitram_cero2\img\1091054385_f.jpg" />
+    <Content Include="nitram_cero2\img\1091254957_f.jpg" />
+    <Content Include="nitram_cero2\img\1093501063_f.jpg" />
+    <Content Include="nitram_cero2\img\1093821789_f.jpg" />
+    <Content Include="nitram_cero2\img\1094865583_f.jpg" />
+    <Content Include="nitram_cero2\img\1095045209_f.jpg" />
+    <Content Include="nitram_cero2\img\1095220249_f.jpg" />
+    <Content Include="nitram_cero2\img\1095312341_f.jpg" />
+    <Content Include="nitram_cero2\img\1095426547_f.jpg" />
+    <Content Include="nitram_cero2\img\1095919360_f.jpg" />
+    <Content Include="nitram_cero2\img\1096006214_f.jpg" />
+    <Content Include="nitram_cero2\img\1096085792_f.jpg" />
+    <Content Include="nitram_cero2\img\1096353620_f.jpg" />
+    <Content Include="nitram_cero2\img\1096560889_f.jpg" />
+    <Content Include="nitram_cero2\img\1096685547_f.jpg" />
+    <Content Include="nitram_cero2\img\1097152961_f.jpg" />
+    <Content Include="nitram_cero2\img\1097280501_f.jpg" />
+    <Content Include="nitram_cero2\img\1097396645_f.jpg" />
+    <Content Include="nitram_cero2\img\1097614076_f.jpg" />
+    <Content Include="nitram_cero2\img\1097717965_f.jpg" />
+    <Content Include="nitram_cero2\img\1097816265_f.jpg" />
+    <Content Include="nitram_cero2\img\1097961469_f.jpg" />
+    <Content Include="nitram_cero2\img\1098016745_f.jpg" />
+    <Content Include="nitram_cero2\img\1098118635_f.jpg" />
+    <Content Include="nitram_cero2\img\1098250480_f.jpg" />
+    <Content Include="nitram_cero2\img\1098384875_f.jpg" />
+    <Content Include="nitram_cero2\img\1098420748_f.jpg" />
+    <Content Include="nitram_cero2\img\1100374165_f.jpg" />
+    <Content Include="nitram_cero2\img\1100974991_f.jpg" />
+    <Content Include="nitram_cero2\img\1101588168_f.jpg" />
+    <Content Include="nitram_cero2\img\1103688805_f.jpg" />
+    <Content Include="nitram_cero2\img\1103688916_f.jpg" />
+    <Content Include="nitram_cero2\img\1104133990_f.jpg" />
+    <Content Include="nitram_cero2\img\1105160756_f.jpg" />
+    <Content Include="nitram_cero2\img\1105331127_f.jpg" />
+    <Content Include="nitram_cero2\img\1108317109_f.jpg" />
+    <Content Include="nitram_cero2\img\1108425412_f.jpg" />
+    <Content Include="nitram_cero2\img\1108581411_f.jpg" />
+    <Content Include="nitram_cero2\img\1109232200_f.jpg" />
+    <Content Include="nitram_cero2\img\1110029914_f.jpg" />
+    <Content Include="nitram_cero2\img\1110425784_f.jpg" />
+    <Content Include="nitram_cero2\img\1110710259_f.jpg" />
+    <Content Include="nitram_cero2\img\1111277172_f.jpg" />
+    <Content Include="nitram_cero2\img\1111364652_f.jpg" />
+    <Content Include="nitram_cero2\img\1111646566_f.jpg" />
+    <Content Include="nitram_cero2\img\1111970022_f.jpg" />
+    <Content Include="nitram_cero2\img\1112160705_f.jpg" />
+    <Content Include="nitram_cero2\img\1112799225_f.jpg" />
+    <Content Include="nitram_cero2\img\1113162877_f.jpg" />
+    <Content Include="nitram_cero2\img\1113343854_f.jpg" />
+    <Content Include="nitram_cero2\img\1113408806_f.jpg" />
+    <Content Include="nitram_cero2\img\1113462233_f.jpg" />
+    <Content Include="nitram_cero2\img\1113543910_f.jpg" />
+    <Content Include="nitram_cero2\img\1113662598_f.jpg" />
+    <Content Include="nitram_cero2\img\1113835385_f.jpg" />
+    <Content Include="nitram_cero2\img\1113915012_f.jpg" />
+    <Content Include="nitram_cero2\img\1114038646_f.jpg" />
+    <Content Include="nitram_cero2\img\1114730983_f.jpg" />
+    <Content Include="nitram_cero2\img\1115229239_f.jpg" />
+    <Content Include="nitram_cero2\img\1115730728_f.jpg" />
+    <Content Include="nitram_cero2\img\1116454726_f.jpg" />
+    <Content Include="nitram_cero2\img\1117054016_f.jpg" />
+    <Content Include="nitram_cero2\img\1117230852_f.jpg" />
+    <Content Include="nitram_cero2\img\1117265757_f.jpg" />
+    <Content Include="nitram_cero2\img\1117559165_f.jpg" />
+    <Content Include="nitram_cero2\img\1117750538_f.jpg" />
+    <Content Include="nitram_cero2\img\1118604476_f.jpg" />
+    <Content Include="nitram_cero2\img\1119203381_f.jpg" />
+    <Content Include="nitram_cero2\img\1119838338_f.jpg" />
+    <Content Include="nitram_cero2\img\1120232883_f.jpg" />
+    <Content Include="nitram_cero2\img\1120368578_f.jpg" />
+    <Content Include="nitram_cero2\img\1120836990_f.jpg" />
+    <Content Include="nitram_cero2\img\1120927004_f.jpg" />
+    <Content Include="nitram_cero2\img\1123320197_f.jpg" />
+    <Content Include="nitram_cero2\img\1124161461_f.jpg" />
+    <Content Include="nitram_cero2\img\1124318926_f.jpg" />
+    <Content Include="nitram_cero2\img\1124387421_f.jpg" />
+    <Content Include="nitram_cero2\img\1124590865_f.jpg" />
+    <Content Include="nitram_cero2\img\1124781100_f.jpg" />
+    <Content Include="nitram_cero2\img\1124955668_f.jpg" />
+    <Content Include="nitram_cero2\img\1125032289_f.jpg" />
+    <Content Include="nitram_cero2\img\1125258056_f.jpg" />
+    <Content Include="nitram_cero2\img\1125372328_f.jpg" />
+    <Content Include="nitram_cero2\img\1125501418_f.jpg" />
+    <Content Include="nitram_cero2\img\1125594191_f.jpg" />
+    <Content Include="nitram_cero2\img\1125675320_f.jpg" />
+    <Content Include="nitram_cero2\img\1126042844_f.jpg" />
+    <Content Include="nitram_cero2\img\1126782944_f.jpg" />
+    <Content Include="nitram_cero2\img\1127366167_f.jpg" />
+    <Content Include="nitram_cero2\img\1127487930_f.jpg" />
+    <Content Include="nitram_cero2\img\1127593074_f.jpg" />
+    <Content Include="nitram_cero2\img\1127862711_f.jpg" />
+    <Content Include="nitram_cero2\img\1128061284_f.jpg" />
+    <Content Include="nitram_cero2\img\1128367488_f.jpg" />
+    <Content Include="nitram_cero2\img\1128571794_f.jpg" />
+    <Content Include="nitram_cero2\img\1128759652_f.jpg" />
+    <Content Include="nitram_cero2\img\1128921667_f.jpg" />
+    <Content Include="nitram_cero2\img\1129157908_f.jpg" />
+    <Content Include="nitram_cero2\img\1129178791_f.jpg" />
+    <Content Include="nitram_cero2\img\1129485549_f.jpg" />
+    <Content Include="nitram_cero2\img\1129607201_f.jpg" />
+    <Content Include="nitram_cero2\img\1129952985_f.jpg" />
+    <Content Include="nitram_cero2\img\1130059848_f.jpg" />
+    <Content Include="nitram_cero2\img\1130254979_f.jpg" />
+    <Content Include="nitram_cero2\img\1130445233_f.jpg" />
+    <Content Include="nitram_cero2\img\1130573837_f.jpg" />
+    <Content Include="nitram_cero2\img\1130646222_f.jpg" />
+    <Content Include="nitram_cero2\img\1130904342_f.jpg" />
+    <Content Include="nitram_cero2\img\1131066096_f.jpg" />
+    <Content Include="nitram_cero2\img\1131429083_f.jpg" />
+    <Content Include="nitram_cero2\img\1131656722_f.jpg" />
+    <Content Include="nitram_cero2\img\1131762551_f.jpg" />
+    <Content Include="nitram_cero2\img\1132026785_f.jpg" />
+    <Content Include="nitram_cero2\img\1132422223_f.jpg" />
+    <Content Include="nitram_cero2\img\1132516345_f.jpg" />
+    <Content Include="nitram_cero2\img\1132642902_f.jpg" />
+    <Content Include="nitram_cero2\img\1132897800_f.jpg" />
+    <Content Include="nitram_cero2\img\1132997798_f.jpg" />
+    <Content Include="nitram_cero2\img\1133087704_f.jpg" />
+    <Content Include="nitram_cero2\img\1133232596_f.jpg" />
+    <Content Include="nitram_cero2\img\1133586056_f.jpg" />
+    <Content Include="nitram_cero2\img\1133690851_f.jpg" />
+    <Content Include="nitram_cero2\web\fecha.html" />
+    <Content Include="nitram_cero2\web\css\f.css" />
+    <Content Include="nitram_cero2\web\css\s.css" />
+    <Content Include="nitram_cero2\web\img\dots.png" />
+    <Content Include="nitram_cero2\web\img\p1.png" />
+    <Compile Include="utils.js" />
+    <Compile Include="nitram_cero2\web\js\app.js" />
+    <Compile Include="nitram_cero2\web\js\fecha.js" />
+    <Compile Include="nitram_cero2\web\js\fotolog_data.js" />
+    <Compile Include="nitram_cero2\web\js\jq.js" />
+    <Content Include="template\web\fecha.html" />
+    <Content Include="template\web\css\f.css" />
+    <Content Include="template\web\css\s.css" />
+    <Content Include="template\web\img\dots.png" />
+    <Content Include="template\web\img\p1.png" />
+    <Compile Include="template\web\js\app.js" />
+    <Compile Include="template\web\js\fecha.js" />
+    <Compile Include="template\web\js\jq.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="by2bam" />
+    <Folder Include="nitram_cero2" />
+    <Folder Include="nitram_cero2\img" />
+    <Folder Include="nitram_cero2\web" />
+    <Folder Include="nitram_cero2\web\css" />
+    <Folder Include="nitram_cero2\web\img" />
+    <Folder Include="nitram_cero2\web\js" />
+    <Folder Include="template" />
+    <Folder Include="template\web" />
+    <Folder Include="template\web\css" />
+    <Folder Include="template\web\img" />
+    <Folder Include="template\web\js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
