@@ -1,6 +1,6 @@
 
 # FOTODUMPER v2
-Based on fotodumber by @armdz
+Based on fotodumper by @armdz
 Download entire http://fotolog.com account. Photos, comments, and extra data.
 Saved as json, ready to parse and visualize.
 ALSO INCLUDES "protolog" a very simple html fotolog like visualizer.
@@ -9,11 +9,11 @@ The downloaded files are in a folder thats is named as the fotolog account, with
 
 The output will be a lot of "." and "i" for successful image and "Ex" for errors and retrys (unless verbose mode is set)
 
-If you stop, it continues from the last 
+If you stop (or it fails enought times), it continues from the last id that failed
 
 # USAGE (template and node_modules folders, ARE NEEDED)
 
-node fotodump.js <fotolog-username>
+`node fotodump.js **fotolog-username**`
 
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
 
