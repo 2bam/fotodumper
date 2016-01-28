@@ -17,6 +17,7 @@ _(If you already started using v2.0, you should use "--forget --adapt" options t
 
 # USAGE
 `node fotodump.js <fotolog-username>`
+Run it multiple times if it fails.
 
 ## Detailed howto
 

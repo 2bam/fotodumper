@@ -77,7 +77,7 @@ function printError(err) {
     if (VERBOSE)
         console.log("\nError (don't worry will retry):\n\t" + err.join("\n\t"));
     else
-        process.stdout.write('E');
+        process.stdout.write(err[0] == "Bogus comments section, no comments" ? 'n' : 'E');
 }
 
 GLOBAL.ACTIVE = 0;
@@ -89,8 +89,10 @@ function writeFailedFile() {
 }
 
 function reindexAll() {
-    console.log("Reindexing...")
     fileList = fs.readdirSync(PATH_SINGLE_DATA).filter(function (x) { return /[0-9]+\.json/.test(x); });
+    
+    if (fileList.length == 0) return;
+    else console.log("Reindexing " + fileList.length + "...");
     
     var map = {}
     var list = []
@@ -184,7 +186,7 @@ function downloadImageOrRetry(id, url, local, retry) {
         }
         , function (err) {
             printError(err);
-            failed.lastIndex = index;
+            //failed.lastIndex = index;
 
             if (retry <= RETRIES) {
                 downloadImageOrRetry(id, url, local, retry + 1);     //Try once more...

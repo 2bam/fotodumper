@@ -3,7 +3,8 @@ In non-verbose mode:
 * `_` means skipped file
 * `.` means downloaded data (message, comments...)
 * `i` means downloaded image/photo
-* `En` means error and `n` is the retry number. These may be safe if there were actually no comments.
+* `nx` means no comments (sometimes a bug) and `x` is the retry number. These may be safe if there were actually no comments.
+* `Ex` means error and `x` is the retry number.
 * `M(x/y)` means a mismatch for "next photo" was found (continue from both of these numbers using `-f` if it fails here)
 
 # Migrating from v2
