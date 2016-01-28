@@ -12,11 +12,12 @@ The output will be a lot of "." and "i" for successful image and "Ex" for errors
 
 
 ## v2.1
-Now it changes so it crawls backwards instead of forwards, more user friendly in that matter.
+Now it changes so it crawls backwards instead of forward, more user friendly in that matter.
 _(If you already started using v2.0, you should use "--forget --adapt" options to work with already downloaded files)_
 
 # USAGE
-`node fotodump.js <fotolog-username>`
+`node fotodump.js fotolog_username`
+
 Run it multiple times if it fails.
 
 ## Detailed howto
@@ -24,8 +25,8 @@ Run it multiple times if it fails.
 * Download and install node.js (https://nodejs.org/).
 * Download the ZIP (top-right in https://github.com/2bam/fotodumper) and unzip it.
 * _(In Windows)_ Right click holding shift inside the unzipped folder and click "Open command window here"
-* Run this command: `node fotodump.js <fotolog-username>`
-fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
+* Run this command: `node fotodump.js fotolog_username`
+fotolog_username is the name you get from the link (http://www.fotolog.com/fotolog-username)
 
 **(Remember template and node_modules folders, ARE NEEDED)**
 
