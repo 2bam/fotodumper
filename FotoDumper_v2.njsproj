@@ -162,6 +162,8 @@
     <Content Include="nitram_cero2\web\css\s.css" />
     <Content Include="nitram_cero2\web\img\dots.png" />
     <Content Include="nitram_cero2\web\img\p1.png" />
+    <Compile Include="fotoreindex.js" />
+    <Compile Include="occheck.js" />
     <Compile Include="utils.js" />
     <Compile Include="nitram_cero2\web\js\app.js" />
     <Compile Include="nitram_cero2\web\js\fecha.js" />

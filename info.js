@@ -29,7 +29,7 @@ function fixHTML(html) {
 }
 
 //onSuccess(info object)
-function extractData(url, lastTry, onSuccess, onError) {
+function extractData(id, url, succeedIfNoComments, onSuccess, onError) {
     ACTIVE++;
     req = request({ url: url, timeout: TIMEOUT }, function (error, response, body) {
         ACTIVE--;
@@ -43,42 +43,46 @@ function extractData(url, lastTry, onSuccess, onError) {
                 
                 var nextPage = 0; nextPageBis = 0;
                 try {
-                    var nextPage = $('a.arrow_change_photo').not(".arrow_change_photo_right");
-                    nextPage = nextPage.attr("href");
-                    nextPage = nextPage.split("/")[nextPage.split("/").length - 2];
-                    //console.log("nextPage   =" + nextPage);
+                    centerImage = $("div #flog_img_holder").children("a.wall_img_container_big").first();
+			        nextPage = centerImage.attr("href");
 
+                    /*var nextPage = $('a.arrow_change_photo.arrow_change_photo_right');
+                    nextPage = nextPage.attr("href");*/
+                    nextPage = nextPage.split("/")[nextPage.split("/").length - 2];
+                    if(VERBOSE) console.log("nextPage   =" + nextPage);
                 }
                 catch (e) {
                 }
 
                 try {
-                    nextPageBis = $('li').has('a.wall_img_container.wall_img_container_current');
-                    nextPageBis = nextPageBis.prev().children(":first-child");
+                    nextPageBis = $('li').has('a.wall_img_container.wall_img_container_current[href*='+id+']');
+                    nextPageBis = nextPageBis.next().children(":first-child");
                     nextPageBis = nextPageBis.attr("href");
-                    //console.log("nextPageBis=" + nextPageBis);
-
                     nextPageBis = nextPageBis.split("/")[nextPageBis.split("/").length - 2];
+                    if(VERBOSE) console.log("nextPageBis=" + nextPageBis);
                 } catch (e) {
                 }
                 
                 //if (nextPageBis && nextPageBis != nextPage) {
-                if (nextPageBis && nextPageBis > nextPage) {
+                if (nextPageBis && nextPageBis < nextPage) {
                      //HACK: Sometimes the arrow will throw you to the first photo (maybe a photo was erased between?)
                      //     But if there is a thumbnail below the pic, it might give us the correct solution (sometimes it fails thou)
                      //FIXME: maybe here's the key...
                      //Need to solve: http://www.fotolog.com/_c_bunny_/10468463/
-                    console.log("\nMismatched", "nextPage   =",nextPage, "nextPageBis=", nextPageBis);
-                    data.nextID = nextPageBis;
-                     
+
+                    if(nextPageBis != nextPage) {
+                        if(VERBOSE) console.log("\nMismatched", "nextPage   =",nextPage, "nextPageBis=", nextPageBis);
+                        else process.stdout.write("M("+nextPageBis+"/"+nextPage+")");
+                    }
+                    data.prevID = nextPageBis;
                 }
                 else if (nextPage) {
                     //console.log(nextPage)
                     //nextPage = nextPage.attr("href");
-                    data.nextID = nextPage;
+                    data.prevID = nextPage;
                 }
                 else
-                    data.nextID = undefined;
+                    data.prevID = undefined;
                 
                 var has_title = $('div #description_photo').find("h1");
                 if (has_title.length) data.title = has_title.first().text();
@@ -140,7 +144,7 @@ function extractData(url, lastTry, onSuccess, onError) {
                 onError(["Error in exctraction, probably server's fault", url, error, response, e]);
                 return;
             }
-            if (commentDetect <= 0 && !lastTry)       //TODO: Mark as bogus, reload!
+            if (commentDetect <= 0 && !succeedIfNoComments)       //TODO: Mark as bogus, reload!
                 onError(["Bogus comments section, no comments", url, error, response]);
             else {
                 if (VERBOSE) console.log("Data and " + commentDetect + " comments saved");
@@ -164,23 +168,21 @@ function findFirstPhotoID(url, onSuccess, onError) {
                 
                 var $ = cheerio.load(body);
                 
+                //<meta property="og:url" content="http://www.fotolog.com/fragilejunkie/33704135/">
+                picUrl = $("meta[property='og:url']").attr("content");
                 
-                var lastTag;
-                lastTag = $('a.wall_img_container').last();
-                //console.log(lastTag);
-                //each(function (i, elem) {
-                //    //log($(this))
-                //    lastTag = $(this)
-                //})
-                
-			    picUrl = lastTag.attr("href");
+                //centerImage = $("div #flog_img_holder");
+                //centerImage=centerImage.children("a.wall_img_container_big").first();
+			    //picUrl = centerImage.attr("href");
+
+
                 picID = picUrl.substring(picUrl.lastIndexOf('/', picUrl.length-2)+1, picUrl.length-1);
                 //console.log("last=", picUrl);
                 //console.log("pic ID=", picID);
             }
             catch (e) {
                 console.log("");
-                console.log("Problem processing last page. It's probably blank.");
+                console.log("Problem processing first page. It's probably blank.");
                 console.log("Please use 'node fotodump.js USERNAME -f FIRST_PHOTO_NUMBER'");
                 console.log("(If your first image EVER's link is: http://www.fotolog.com/USERNAME/12345, use 'node fotodump.js USERNAME -f 12345 '");
                 onError(["Problem processing last page", url, error, response, e]);

@@ -11,19 +11,22 @@ opt = require('node-getopt').create([
     //['m' , 'multi-with-arg=ARG+' , 'multiple option with argument']
 
       ['r' , 'retry=ARG'             , 'retry download times (default 10)']
+    , ['n' , 'no-comment-retry=ARG'  , "retry no-comments bug times before accepting there are none (default=3)"]
     , [''  , 'forget'                , "don't start from first found id"]
+    , [''  , 'no-images'             , "don't download images"]
     , ['f' , 'from=ARG'              , 'starts from a different pic id']
     //, ['s' , 'skip-downloaded'       , 'skips photos already in data/ and img/']
     , ['x' , 'force-download'        , 'redownload even if pressent in data/ and img/']
     , ['t' , 'timeout=ARG'           , 'seconds to timeout request (default 5)']
     , ['d' , 'dont-assemble'         , 'do not assemble protolog when finished processing']
+    , ['a' , 'adapt'                 , 'redownload first and last...']
     , ['h' , 'help'                  , 'display this help']
     , ['v' , 'verbose'               , 'verbose output']
     ])// create Getopt instance
     .bindHelp()// bind option 'help' to default action
     .setHelp(   
     "Usage: node fotodump.js [OPTION] <fotolog-username>\n" +
-      "Fotolog account dumper v2\n" +
+      "Fotolog account dumper v2.1\n" +
       "\n" +
       "[[OPTIONS]]\n" +
       "\n" +
@@ -39,6 +42,7 @@ if (opt.argv.length != 1) {
 GLOBAL.VERBOSE = (opt.options.verbose?true:false);
 GLOBAL.TIMEOUT = ('timeout' in opt.options ? parseInt(opt.options.timeout) : 5) * 1000;
 const RETRIES = 'retry' in opt.options ? parseInt(opt.options.retry) : 10;
+const NC_RETRIES = 'no-comment-retry' in opt.options ? parseInt(opt.options["no-comment-retry"]) : 3;
 const SKIP = !opt.options["force-download"]; //opt.options["skip-downloaded"];
 //if (VERBOSE) console.log({ timeout: GLOBAL.TIMEOUT, retry: RETRIES });
 
@@ -84,18 +88,89 @@ function writeFailedFile() {
     });
 }
 
+function reindexAll() {
+    console.log("Reindexing...")
+    fileList = fs.readdirSync(PATH_SINGLE_DATA).filter(function (x) { return /[0-9]+\.json/.test(x); });
+    
+    var map = {}
+    var list = []
+    
+    for (i = 0; i < fileList.length; i++) {
+        var jpath = PATH_SINGLE_DATA + fileList[i];
+        var json;
+        try {
+            json = js.readFileSync(jpath);
+        } catch(e) {
+            json = undefined;
+        }
+        if (json) {
+            obj = { p: jpath, d: json, c:0 };
+            map[json.id] = obj;
+            list.push(obj);
+        }
+    }
+    for (j = 0; j < 2; j++) {
+        for (i = 0; i < list.length; i++) {
+            if (list[i].d.nextID && map[list[i].d.nextID]) {       //Backwards compatible
+                map[list[i].d.nextID].d.prevID = list[i].d.id;
+            }
+            if (list[i].d.prevID && map[list[i].d.prevID]) {
+                map[list[i].d.prevID].d.nextID = list[i].d.id;
+            }
+        }
+    }
+    //Sort by index
+    //list.sort(function (a, b) { return a.d.index - b.d.index; })
+    
+    //
+    //TODO: join orphan lists...
+    //
+
+    //find first and redo indexes
+    var ni = 0;
+    for (i = 0; i < list.length; i++) {
+        first = it = list[i];
+        if (!it.d.nextID) {
+            while(it) {
+                it.d.index = ni++;
+                it.c++;
+
+                it = map[it.d.prevID];
+                if (it && it.c) {  //Already colored? Endless loop? fix it.
+                    console.log("Reindex endless loop", it.d.nextID, it.d.prevID, it.c);
+                    map[it.d.nextID].d.prevID = undefined;
+                    break;
+                }
+            }
+        }
+    }
+    
+    //Save again
+    for (i = 0; i < list.length; i++) {
+        js.writeFileSync(list[i].p, list[i].d);
+    }
+
+    //process.exit();
+}
+
 function onFinished() {
     console.log("");
     writeFailedFile();
 
     console.log("+++++++FINISHED. Success = ", success.length, " Fail process =", failed.extracts.length, "+ Fail images =", failed.images.length);
+    
+    reindexAll();
 
     if (!opt.options['dont-assemble']) {
         fotoassemble.assembleProtolog(opt.argv[0]);
     }
+
+
 }
 
 function downloadImageOrRetry(id, url, local, retry) {
+    if (opt.options["no-images"]) return;
+
     if (!retry) retry = 0;
     if (VERBOSE) console.log("\n******* Downloading image", id, url, retry ? " retry #" + retry : "");
     else if (retry) process.stdout.write(""+retry);
@@ -128,24 +203,40 @@ function processId(id, index, retry) {
     
     var idx = 0;
     while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.statSync(PATH_IMG + id + ".jpg").size != 0 && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
-        skip = js.readFileSync(PATH_SINGLE_DATA + id + ".json");
+        try {
+            skip = js.readFileSync(PATH_SINGLE_DATA + id + ".json");
+        } catch (e) {
+            skip = undefined;
+        }
         
         if (!skip) break;   //on error in .json, redownload
-
+        
+        if (opt.options.adapt && (!skip.nextID || !skip.prevID)) break;     //redownlaod first and last
+        
+        if (skip.prevID == id) {
+            console.log("ERROR: Endless loop found, please use -f NUMBER to start from a different photo id.");
+            console.log("Offending id=", id);
+            console.log("Came from id=", skip.nextID);
+            failed.extracts.push(id);
+            return;
+        }
+        
         //skip.index = idx++;
         //skip = js.writeFileSync(PATH_SINGLE_DATA + id + ".json");
         
-        success.push(id);
-
-        if (VERBOSE) console.log("Skipping " + id + " to next " + skip.nextID);
+        if (VERBOSE) console.log("Skipping " + id + " to next " + skip.prevID);
         else process.stdout.write("_");
         
-        id = skip.nextID;
-       
-        if (!id) {
+        //console.log("X", id, skip.prevID, skip.nextID);
+        
+        if (!skip.prevID) {     //finished
             failed.lastId = 0;
             if (VERBOSE) console.log("No more to skip to...");
             return;
+        }
+        else {
+            success.push(id);
+            id = skip.prevID;
         }
     }
     
@@ -162,16 +253,17 @@ function processId(id, index, retry) {
     else if (retry) process.stdout.write("" + retry);
 
     info.extractData(
-          url
-        , retry>=RETRIES        //last retry be more relaxed about no-comments
+          id
+        , url
+        , retry>=NC_RETRIES        //last retry be more relaxed about no-comments
         , function (data) {
             if (!VERBOSE) process.stdout.write(".");
             success.push(id);
             
-            if (VERBOSE) console.log("Next ID:", data.nextID);
+            if (VERBOSE) console.log("Next ID:", data.prevID);
             
-            if (data.nextID)
-                processId(data.nextID, index+1);
+            if (data.prevID)
+                processId(data.prevID, index+1);
             else {
                 //onFinished(false);
                 if(VERBOSE) console.log("Finished processing normally");
@@ -213,6 +305,8 @@ function processId(id, index, retry) {
 //processId(8008729);
 console.log("\nSTARTING...");
 
+reindexAll();
+
 try {
     temp = js.readFileSync(PATH_SINGLE_DATA + "failed.json");
     if (temp) {
@@ -233,7 +327,9 @@ else if (/*failed.lastId*/ failed.firstId && !opt.options.forget) {
 else {
     if (VERBOSE) console.log("Finding first ID...");
     info.findFirstPhotoID(baseUrl, function (id) {
-        if (VERBOSE) console.log("Found first id: " + id + ".");
+        console.log("Found first id: " + id + ".");
+        failed.firstId = id;
+        writeFailedFile();
         processId(id);
     }, printError);
 }
