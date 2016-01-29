@@ -1,5 +1,5 @@
 
-# FOTODUMPER v2.1
+# FOTODUMPER v2.2
 
 Based on fotodumper by @armdz
 
