@@ -37,6 +37,43 @@ function extractData(id, url, succeedIfNoComments, onSuccess, onError) {
             try {
                 var $ = cheerio.load(body);
                 
+                //Assert the pic is actually the pic!
+                metaUrl = $("meta[property='og:url']").attr("content");
+                picID = metaUrl.substring(metaUrl.lastIndexOf('/', metaUrl.length - 2) + 1, metaUrl.length - 1);
+                
+                if (0) {
+                    console.log("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+                    nextPageBis = $('li').has('a.wall_img_container.wall_img_container_current[href*=' + id + ']');
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    
+                    nextPageBis = nextPageBis.next().children(":first-child");
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    nextPageBis = nextPageBis.attr("href");
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    nextPageBis = nextPageBis.split("/")[nextPageBis.split("/").length - 2];
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    
+                    console.log("YYYYYYYYYYYYYYYYYYYYYYY");
+                    
+                    nextPageBis = $('li').has('a.wall_img_container.wall_img_container_current');
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    
+                    nextPageBis = nextPageBis.next().children(":first-child");
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    nextPageBis = nextPageBis.attr("href");
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+                    nextPageBis = nextPageBis.split("/")[nextPageBis.split("/").length - 2];
+                    if (VERBOSE) console.log("nextPageBis=" + nextPageBis);
+
+                }
+
+                if (picID != id) {
+                    console.log("Picture id isn't what it's supposed to be intended:" + id + "vs downloaded: "+picID);
+                    onError(["Bad pic id", url, error, response]);
+                    
+                    return;
+                }
+                
                 var data = {}
                 
                 data.image = $('a.wall_img_container_big').find("img").attr("src");
@@ -64,7 +101,8 @@ function extractData(id, url, succeedIfNoComments, onSuccess, onError) {
                 }
                 
                 //if (nextPageBis && nextPageBis != nextPage) {
-                if (nextPageBis && nextPageBis < nextPage) {
+                //if (nextPageBis && nextPageBis < nextPage) {
+                if (nextPageBis && nextPageBis != "archive") {      //nextPageBis has priority, sometimes is higher or lower, but if it exists, it's a better shot.
                      //HACK: Sometimes the arrow will throw you to the first photo (maybe a photo was erased between?)
                      //     But if there is a thumbnail below the pic, it might give us the correct solution (sometimes it fails thou)
                      //FIXME: maybe here's the key...

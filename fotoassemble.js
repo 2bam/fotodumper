@@ -29,9 +29,14 @@ function assembleProtolog(username) {
     };
     
     for (i = 0; i < fileList.length; i++) {
-        var json = js.readFileSync(PATH_SINGLE_DATA + fileList[i]);
+        try {
+            var json = js.readFileSync(PATH_SINGLE_DATA + fileList[i]);
+            ldata.fotos.push(utils.convertToLolos(json));
+        }
+        catch (e) {
+            json = undefined;
+        }
         //console.log(json.date);
-        ldata.fotos.push(utils.convertToLolos(json));
     }
     ldata.fotos.sort(function(a,b){ return a.index - b.index; })
     js.writeFileSync(username + "/web/js/fotolog_data.js", ldata);

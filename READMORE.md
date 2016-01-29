@@ -7,8 +7,18 @@ In non-verbose mode:
 * `Ex` means error and `x` is the retry number.
 * `M(x/y)` means a mismatch for "next photo" was found (continue from both of these numbers using `-f` if it fails here)
 
-# Migrating from v2
-If you already started downloading with v2, you should call `--adapt` to discard first and last photos downloaded and make skipping work again
+# Changelog
+
+### v2.2
+Endless loop/mismatched id to real-id detections (badly indexed fotolog links throw you to the first page)
+
+### v2.1
+Now it changes so it crawls backwards instead of forward, more user friendly in that matter.
+_(If you already started using v2.0, you should use "--forget --adapt" options to work with already downloaded files)_
+
+
+# Migrating from v2.0
+If you already started downloading with v2.0, you should call `--adapt --forget` to discard first and last photos downloaded and make skipping work again
 
 # Starting from an specific photo
 
@@ -18,16 +28,18 @@ If you already started downloading with v2, you should call `--adapt` to discard
 ```
 Usage: node fotodump.js [OPTION] <fotolog-username>
 
-  -r, --retry=ARG       retry download times (default 10)
-      --forget          don't start from first found id
-      --no-images       don't download images
-  -f, --from=ARG        starts from a different pic id
-  -x, --force-download  redownload even if pressent in data/ and img/
-  -t, --timeout=ARG     seconds to timeout request (default 5)
-  -d, --dont-assemble   do not assemble protolog when finished processing
-  -a, --adapt           redownload first and last...
-  -h, --help            display this help
-  -v, --verbose         verbose output
+  -r, --retry=ARG             retry download times (default 10)
+  -n, --no-comment-retry=ARG  retry no-comments bug times before accepting there
+ are none (default=3)
+      --forget                don't start from first found id
+      --no-images             don't download images
+  -f, --from=ARG              starts from a different pic id
+  -x, --force-download        redownload even if pressent in data/ and img/
+  -t, --timeout=ARG           seconds to timeout request (default 5)
+  -d, --dont-assemble         do not assemble protolog when finished processing
+  -a, --adapt                 redownload first and last...
+  -h, --help                  display this help
+  -v, --verbose               verbose output
 ```
 Also, you can call: ```node fotoassemble.js <fotolog-username>``` to create the protolog from all downloaded data (if you had trouble or needed multiple passes)
 

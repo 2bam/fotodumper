@@ -26,7 +26,7 @@ opt = require('node-getopt').create([
     .bindHelp()// bind option 'help' to default action
     .setHelp(   
     "Usage: node fotodump.js [OPTION] <fotolog-username>\n" +
-      "Fotolog account dumper v2.1\n" +
+      "Fotolog account dumper v2.2\n" +
       "\n" +
       "[[OPTIONS]]\n" +
       "\n" +
@@ -72,7 +72,6 @@ if (VERBOSE) {
 }
 
 
-
 function printError(err) {
     if (VERBOSE)
         console.log("\nError (don't worry will retry):\n\t" + err.join("\n\t"));
@@ -88,6 +87,7 @@ function writeFailedFile() {
     });
 }
 
+reindexed = null;
 function reindexAll() {
     fileList = fs.readdirSync(PATH_SINGLE_DATA).filter(function (x) { return /[0-9]+\.json/.test(x); });
     
@@ -106,7 +106,10 @@ function reindexAll() {
             json = undefined;
         }
         if (json) {
-            obj = { p: jpath, d: json, c:0 };
+            if (json.prevID == "archive") json.prevID = undefined;
+            if (json.nextID == "archive") json.nextID = undefined;
+            obj = { p: jpath, d: json, c: 0 };
+
             map[json.id] = obj;
             list.push(obj);
         }
@@ -131,7 +134,7 @@ function reindexAll() {
     //find first and redo indexes
     var ni = 0;
     for (i = 0; i < list.length; i++) {
-        first = it = list[i];
+        it = list[i];
         if (!it.d.nextID) {
             while(it) {
                 it.d.index = ni++;
@@ -139,20 +142,22 @@ function reindexAll() {
 
                 it = map[it.d.prevID];
                 if (it && it.c) {  //Already colored? Endless loop? fix it.
-                    console.log("Reindex endless loop", it.d.nextID, it.d.prevID, it.c);
-                    map[it.d.nextID].d.prevID = undefined;
+                    console.log("Reindex endless loop", it.d.nextID, "=>", it.d.prevID, it.c);
+                    //map[it.d.nextID].d.prevID = undefined;
+                    map[it.d.nextID].d = undefined;  //with errors, redownload
+                    //it.d.prevID = undefined;
                     break;
                 }
             }
+            break;
         }
     }
+    reindexed = list;
     
     //Save again
     for (i = 0; i < list.length; i++) {
         js.writeFileSync(list[i].p, list[i].d);
     }
-
-    //process.exit();
 }
 
 function onFinished() {
@@ -199,10 +204,43 @@ function downloadImageOrRetry(id, url, local, retry) {
         });
 }
 
+function shouldAdapt(obj) {
+    try {
+        if (!obj.nextID || !obj.prevID) return true;
+        //console.log("AAAA1", reindexed[reindexed.length - 1].d.id);
+        //console.log("AAAA2", reindexed[reindexed.length - 2].d.id);
+        //if (reindexed[reindexed.length - 1].d.id == obj.id) return true;
+        //if (reindexed[reindexed.length - 2].d.id == obj.id) return true;
+        //if (reindexed[1].d.id == obj.id) return true;
+            
+    }
+    catch (e) {
+        return true;
+    }
+}
+
+function loopHelp(id) {
+    console.log("ERROR: Endless loop found, please use 'node fotodump.js -x -f NUMBER' to force it to start from a different photo id number.");
+    console.log("Offending id=", id);
+    process.stdout.write("Came from ids= ");
+    lastOk = success.slice(success.length - 5, success.length);
+
+    for (i = 0; i < lastOk.length; i++) {
+        process.stdout.write((i != 0?"->":"") + lastOk[i]);
+    }
+    process.stdout.write("\n");
+}
+
 function processId(id, index, retry) {
     if (!retry) retry = 0;
     if (!index) index = 0;
     
+    if (success.indexOf(id) >= 0) {
+        loopHelp(id);
+        failed.extracts.push(id);
+        return;
+    }
+     
     var idx = 0;
     while (SKIP && retry == 0 && fs.existsSync(PATH_IMG + id + ".jpg") && fs.statSync(PATH_IMG + id + ".jpg").size != 0 && fs.existsSync(PATH_SINGLE_DATA + id + ".json")) {
         try {
@@ -213,12 +251,10 @@ function processId(id, index, retry) {
         
         if (!skip) break;   //on error in .json, redownload
         
-        if (opt.options.adapt && (!skip.nextID || !skip.prevID)) break;     //redownlaod first and last
+        if (opt.options.adapt && shouldAdapt(skip)) break;     //redownlaod first and last
         
-        if (skip.prevID == id) {
-            console.log("ERROR: Endless loop found, please use -f NUMBER to start from a different photo id.");
-            console.log("Offending id=", id);
-            console.log("Came from id=", skip.nextID);
+        if (skip.prevID == id || success.indexOf(id) >= 0) {
+            loopHelp(id);
             failed.extracts.push(id);
             return;
         }
@@ -231,13 +267,14 @@ function processId(id, index, retry) {
         
         //console.log("X", id, skip.prevID, skip.nextID);
         
+        success.push(id);
+
         if (!skip.prevID) {     //finished
             failed.lastId = 0;
             if (VERBOSE) console.log("No more to skip to...");
             return;
         }
         else {
-            success.push(id);
             id = skip.prevID;
         }
     }
@@ -288,9 +325,13 @@ function processId(id, index, retry) {
 
         }
         , function (err) {
+            if (err[0] == "Bad pic id") {
+                loopHelp(id);
+                return;
+            }
 
             printError(err);
-            if (retry <= RETRIES) {
+            if (retry < RETRIES) {
                 processId(id, index, retry+1);     //Try once more...
             }
             else {

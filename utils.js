@@ -18,7 +18,13 @@ function downloadImage(url, filename, onSuccess, onError) {
         ACTIVE--;
         if (!error && response.statusCode == 200) {
             ACTIVE++;
-            request(url).pipe(fs.createWriteStream(filename)).on('close', function () { ACTIVE--; onSuccess() });
+            try {
+                request(url).pipe(fs.createWriteStream(filename)).on('close', function () { ACTIVE--; onSuccess() });
+            }
+            catch (e) {
+                ACTIVE--; 
+                onError(["Downloading image (pipe to stream write)", url, error, response]);
+            }
         }
         else
             onError(["Downloading image", url, error, response]);

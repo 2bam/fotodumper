@@ -8,12 +8,6 @@ ALSO INCLUDES "protolog" a very simple html fotolog like visualizer.
 
 This version intends to be more robust against errors and server discrepancies (you wouldn't believe how many there are).
 It can continue from where you left or failed. The downloaded files are in a folder thats is named as the fotolog account, with all the files inside.
-The output will be a lot of "." and "i" for successful image and "Ex" for errors and retrys (unless verbose mode is set)
-
-
-## v2.1
-Now it changes so it crawls backwards instead of forward, more user friendly in that matter.
-_(If you already started using v2.0, you should use "--forget --adapt" options to work with already downloaded files)_
 
 # USAGE
 `node fotodump.js fotolog_username`
@@ -30,8 +24,9 @@ fotolog_username is the name you get from the link (http://www.fotolog.com/fotol
 
 **(Remember template and node_modules folders, ARE NEEDED)**
 
+
 # Extended usage:
-Read READMORE.md
+Read [READMORE.md]
 
 # AUTHORS
 
