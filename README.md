@@ -26,7 +26,7 @@ fotolog_username is the name you get from the link (http://www.fotolog.com/fotol
 
 
 # Extended usage:
-Read [READMORE.md]
+Read [READMORE.md](READMORE.md)
 
 # AUTHORS
 
