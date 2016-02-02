@@ -18,8 +18,8 @@ Run it multiple times if it fails.
 
 ## Detailed howto
 
-* Download and install node.js (https://nodejs.org/).
-* Download this program's ZIP file (top-right in https://github.com/2bam/fotodumper) and unzip it.
+* [Download and install node.js (https://nodejs.org/)](https://nodejs.org/).
+* [Download this program's ZIP file](https://github.com/2bam/fotodumper/archive/master.zip) ("Download ZIP" top-right in https://github.com/2bam/fotodumper) and unzip it.
 * _(In Windows)_ Right click holding the SHIFT key inside the unzipped folder and click "Open command window here"
 * Run this command: `node fotodump.js fotolog-username`
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
