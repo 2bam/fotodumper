@@ -1,6 +1,6 @@
 
 # FOTODUMPER v2.3
-[LEAME.md](INSTRUCCIONES EN ESPAÑOL)
+**[INSTRUCCIONES EN ESPAÑOL](LEAME.md)**
 
 Based on fotodumper by @armdz
 
