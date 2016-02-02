@@ -12,16 +12,18 @@ var header_div_foto = "<div class=\"foto_div\">";
 function loadData()
 {
 
-	json_data =data_fotolog;
+	json_data = data_fotolog;
 
 	$("#titulo_header").html(json_data["fotolog"]);
-	get_meses();
+	get_meses(0);
 
 }
 
-function	get_meses()
+function	get_meses(index)
 {
-	//      "fecha": "el 24 mayo 2005",
+    //      "fecha": "el 24 mayo 2005",
+    var SUBCOUNT = 100;
+    var INTERVAL = 10;
 
 	var fotos = json_data["fotos"];
 	var current_mes = "";
@@ -34,13 +36,13 @@ function	get_meses()
 	var coment_counter = 0;
 	var vistas_counter = 0;
 
-	for(var i=0;i<fotos.length;i++)
+	for(var i=index, j=0; i<fotos.length && j<SUBCOUNT; i++, j++)
 	{
 
         var foto_fecha = fotos[i]["fecha"];
         
         var foto_mes = foto_fecha.trim().split(" ")[2];
-        if (parseInt(foto_mes)) foto_mes = foto.fecha.trim().split(" ")[1];        //En ingles: "On May 22 2010"
+        if (parseInt(foto_mes)) foto_mes = foto_fecha.trim().split(" ")[1];        //En ingles: "On May 22 2010"
         current_anio = foto_fecha.trim().split(" ")[3];
 
 		if(current_mes == "")
@@ -93,6 +95,18 @@ function	get_meses()
 		
 	}
 	$("#fecha_contenido").append(current_content);
+
+	if (i < fotos.length - 1) {
+	    var str = "";
+	    var pc = (index / SUBCOUNT / 2) % 3;
+	    for (var j = 0; j <= pc; j++)
+	        str += ".";
+	    $("#puntos").html(str);
+	    setTimeout(function () { get_meses(i); }, INTERVAL);
+    }
+	else {
+	    $("#cargando").remove();
+	}
 }
 
 /*
