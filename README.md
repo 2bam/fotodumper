@@ -13,7 +13,7 @@ You access protolog opening `index.html`
 
 # USAGE
 
-** MAKE SURE FOTOLOG IS ACTUALLY WORKING **
+**MAKE SURE YOUR FOTOLOG IS ACTUALLY WORKING**
 
 `node fotodump.js fotolog-username`
 
@@ -27,8 +27,10 @@ Run it multiple times if it fails.
 * Run this command: `node fotodump.js fotolog-username`
 fotolog-username is the name you get from the link (http://www.fotolog.com/fotolog-username)
 
-** MAKE SURE FOTOLOG IS ACTUALLY WORKING **
+**MAKE SURE YOUR FOTOLOG IS ACTUALLY WORKING**
+
 **If it fails check your folder and firewall permissions, try to run as administrator (shouldn't be needed)**
+
 **Remember template and node_modules folders, ARE NEEDED**
 
 
