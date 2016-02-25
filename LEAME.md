@@ -14,7 +14,7 @@ This version intends to be more robust against errors and server discrepancies (
 It can continue from where you left or failed. The downloaded files are in a folder thats is named as the fotolog account, with all the files inside.
 
 # USO
-** ASEGURATE QUE TU FOTOLOG ESTÉ REALMENTE FUNCIONANDO **
+**ASEGURATE QUE TU FOTOLOG ESTÉ REALMENTE FUNCIONANDO**
 
 `node fotodump.js usuario-fotolog`
 
@@ -28,8 +28,10 @@ Ejecutar varias veces si falla.
 * Tipear este comando: `node fotodump.js usuario-fotolog`
 usuario-fotolog es el nombre de usuario que obtenes del link a tu fotolog (http://www.fotolog.com/usuario-fotolog)
 
-** ASEGURATE QUE TU FOTOLOG ESTÉ REALMENTE FUNCIONANDO **
-** Si falla chequea los permisos de tu carpeta y firewall, trata de ejecutar como administrador (no debería ser necesario)**
+**ASEGURATE QUE TU FOTOLOG ESTÉ REALMENTE FUNCIONANDO**
+
+**Si falla chequea los permisos de tu carpeta y firewall, trata de ejecutar como administrador (no debería ser necesario)**
+
 **Recorda que las carpetas template y node_modules, SON NECESARIAS**
 
 
